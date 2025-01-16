@@ -241,6 +241,16 @@ const (
 	v3TransferDetailReceipt      = "/v3/transfer-detail/electronic-receipts"                       // 转账明细电子回单受理 POST
 	v3TransferDetailReceiptQuery = "/v3/transfer-detail/electronic-receipts"                       // 查询转账明细电子回单受理结果 GET
 
+	// 转账（新）
+	v3FundAppTransfer                     = "/v3/fund-app/mch-transfer/transfer-bills"                       // 发起转账 POST
+	v3FundAppTransferCancel               = "/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/%s/cancel" // 撤销转账 POST
+	v3FundAppTransferMerchantQuery        = "/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/%s"        //商户单号查询转账单
+	v3FundAppTransferQuery                = "/v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/%s"   // 微信单号查询转账单
+	v3FundAppTransferMerchantReceipt      = "/v3/fund-app/mch-transfer/elecsign/out-bill-no"                 //商户单号申请电子回单
+	v3FundAppTransferMerchantReceiptQuery = "/v3/fund-app/mch-transfer/elecsign/out-bill-no/%s"              // 商户单号查询电子回单
+	v3FundAppTransferReceipt              = "/v3/fund-app/mch-transfer/elecsign/transfer-bill-no"            // 微信单号申请电子回单
+	v3FundAppTransferReceiptQuery         = "/v3/fund-app/mch-transfer/elecsign/transfer-bill-no/%s"         // 微信单号查询电子回单
+
 	// 转账（服务商）
 	v3PartnerTransfer               = "/v3/partner-transfer/batches"                                          // 发起批量转账 POST
 	v3PartnerTransferQuery          = "/v3/partner-transfer/batches/batch-id/%s"                              // batch_id 微信批次单号查询批次单 GET

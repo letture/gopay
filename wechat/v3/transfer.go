@@ -35,6 +35,58 @@ func (c *ClientV3) V3Transfer(ctx context.Context, bm gopay.BodyMap) (*TransferR
 	return wxRsp, c.verifySyncSign(si)
 }
 
+// 发起商家转账API(新)
+// 注意：入参加密字段数据加密：client.V3EncryptText()
+// Code = 0 is success
+func (c *ClientV3) V3FundAppTransfer(ctx context.Context, bm gopay.BodyMap) (*FundAppTransferRsp, error) {
+	authorization, err := c.authorization(MethodPost, v3FundAppTransfer, bm)
+	if err != nil {
+		return nil, err
+	}
+	res, si, bs, err := c.doProdPost(ctx, bm, v3FundAppTransfer, authorization)
+	if err != nil {
+		return nil, err
+	}
+
+	wxRsp := &FundAppTransferRsp{Code: Success, SignInfo: si}
+	wxRsp.Response = new(FundAppTransfer)
+	if err = json.Unmarshal(bs, wxRsp.Response); err != nil {
+		return nil, fmt.Errorf("[%w]: %v, bytes: %s", gopay.UnmarshalErr, err, string(bs))
+	}
+	if res.StatusCode != http.StatusOK {
+		wxRsp.Code = res.StatusCode
+		wxRsp.Error = string(bs)
+		return wxRsp, nil
+	}
+	return wxRsp, c.verifySyncSign(si)
+}
+
+// 通过微信明细单号撤销转账
+// Code = 0 is success
+func (c *ClientV3) V3FundAppTransferCancel(ctx context.Context, outBillNo string) (*FundAppTransferCancelRsp, error) {
+	url := fmt.Sprintf(v3FundAppTransferCancel, outBillNo)
+	authorization, err := c.authorization(MethodPost, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	res, si, bs, err := c.doProdPost(ctx, nil, url, authorization)
+	if err != nil {
+		return nil, err
+	}
+
+	wxRsp := &FundAppTransferCancelRsp{Code: Success, SignInfo: si}
+	wxRsp.Response = new(FundAppTransferCancel)
+	if err = json.Unmarshal(bs, wxRsp.Response); err != nil {
+		return nil, fmt.Errorf("[%w]: %v, bytes: %s", gopay.UnmarshalErr, err, string(bs))
+	}
+	if res.StatusCode != http.StatusOK {
+		wxRsp.Code = res.StatusCode
+		wxRsp.Error = string(bs)
+		return wxRsp, nil
+	}
+	return wxRsp, c.verifySyncSign(si)
+}
+
 // 发起批量转账API（服务商）
 // 注意：入参加密字段数据加密：client.V3EncryptText()
 // Code = 0 is success
@@ -192,6 +244,32 @@ func (c *ClientV3) V3TransferMerchantQuery(ctx context.Context, outBatchNo strin
 
 	wxRsp := &TransferMerchantQueryRsp{Code: Success, SignInfo: si}
 	wxRsp.Response = new(TransferMerchantQuery)
+	if err = json.Unmarshal(bs, wxRsp.Response); err != nil {
+		return nil, fmt.Errorf("[%w]: %v, bytes: %s", gopay.UnmarshalErr, err, string(bs))
+	}
+	if res.StatusCode != http.StatusOK {
+		wxRsp.Code = res.StatusCode
+		wxRsp.Error = string(bs)
+		return wxRsp, nil
+	}
+	return wxRsp, c.verifySyncSign(si)
+}
+
+// 通过商家批次单号查询批次单
+// Code = 0 is success
+func (c *ClientV3) V3FundAppTransferMerchantQuery(ctx context.Context, outBillNo string) (*FundAppTransferMerchantQueryRsp, error) {
+	uri := fmt.Sprintf(v3FundAppTransferMerchantQuery, outBillNo)
+	authorization, err := c.authorization(MethodGet, uri, nil)
+	if err != nil {
+		return nil, err
+	}
+	res, si, bs, err := c.doProdGet(ctx, uri, authorization)
+	if err != nil {
+		return nil, err
+	}
+
+	wxRsp := &FundAppTransferMerchantQueryRsp{Code: Success, SignInfo: si}
+	wxRsp.Response = new(FundAppTransferMerchantQuery)
 	if err = json.Unmarshal(bs, wxRsp.Response); err != nil {
 		return nil, fmt.Errorf("[%w]: %v, bytes: %s", gopay.UnmarshalErr, err, string(bs))
 	}

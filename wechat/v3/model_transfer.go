@@ -8,6 +8,22 @@ type TransferRsp struct {
 	Error    string    `json:"-"`
 }
 
+// 发起转账 Rsp
+type FundAppTransferRsp struct {
+	Code     int              `json:"-"`
+	SignInfo *SignInfo        `json:"-"`
+	Response *FundAppTransfer `json:"response,omitempty"`
+	Error    string           `json:"-"`
+}
+
+// 取消转账 Rsp
+type FundAppTransferCancelRsp struct {
+	Code     int                    `json:"-"`
+	SignInfo *SignInfo              `json:"-"`
+	Response *FundAppTransferCancel `json:"response,omitempty"`
+	Error    string                 `json:"-"`
+}
+
 // 微信批次单号查询批次单 Rsp
 type TransferQueryRsp struct {
 	Code     int            `json:"-"`
@@ -46,6 +62,14 @@ type TransferMerchantQueryRsp struct {
 	SignInfo *SignInfo              `json:"-"`
 	Response *TransferMerchantQuery `json:"response,omitempty"`
 	Error    string                 `json:"-"`
+}
+
+// 商家批次单号查询批次单 Rsp
+type FundAppTransferMerchantQueryRsp struct {
+	Code     int                           `json:"-"`
+	SignInfo *SignInfo                     `json:"-"`
+	Response *FundAppTransferMerchantQuery `json:"response,omitempty"`
+	Error    string                        `json:"-"`
 }
 
 // 商家批次单号查询批次单（服务商） Rsp
@@ -112,6 +136,19 @@ type Transfer struct {
 	CreateTime string `json:"create_time"`  // 批次受理成功时返回
 }
 
+type FundAppTransfer struct {
+	OutBillNo      string `json:"out_detail_no"`    // 商家明细单号
+	TransferBillNo string `json:"transfer_bill_no"` // 转账金额单位为分
+	CreateTime     string `json:"create_time"`      // 转账发起的时间
+	State          string `json:"state"`            // 转账状态
+}
+
+type FundAppTransferCancel struct {
+	OutBillNo      string `json:"out_detail_no"`    // 商家明细单号
+	TransferBillNo string `json:"transfer_bill_no"` // 转账金额单位为分
+	UpdateTime     string `json:"update_time"`      // 转账发起的时间
+	State          string `json:"state"`            // 转账状态
+}
 type TransferQuery struct {
 	TransferBatch      *TransferBatch    `json:"transfer_batch"`                 // 转账批次单基本信息
 	TransferDetailList []*TransferDetail `json:"transfer_detail_list,omitempty"` // 当批次状态为“FINISHED”（已完成），且成功查询到转账明细单时返回
@@ -207,6 +244,14 @@ type TransferMerchantQuery struct {
 	TransferDetailList []*TransferDetail `json:"transfer_detail_list,omitempty"` // 当批次状态为“FINISHED”（已完成），且成功查询到转账明细单时返回
 	Offset             int               `json:"offset,omitempty"`               // 该次请求资源（转账明细单）的起始位置
 	Limit              int               `json:"limit,omitempty"`                // 该次请求可返回的最大资源（转账明细单）条数
+}
+
+type FundAppTransferMerchantQuery struct {
+	MchId          string `json:"mchid"`            // 微信支付分配的商户号
+	OutBillNo      string `json:"out_detail_no"`    // 商家明细单号
+	TransferBillNo string `json:"transfer_bill_no"` // 商家转账订单的主键，唯一定义此资源的标识
+	Appid          string `json:"appid"`            // 申请商户号的appid或商户号绑定的appid（企业号corpid即为此appid）
+	State          string `json:"state"`            // 单据状态
 }
 
 type PartnerTransferMerchantQuery struct {

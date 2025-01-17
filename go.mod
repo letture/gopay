@@ -11,3 +11,5 @@ require (
 	github.com/go-pay/xtime v0.0.2
 	golang.org/x/crypto v0.32.0
 )
+
+replace github.com/go-pay/gopay => github.com/letture/gopay v1.5.109

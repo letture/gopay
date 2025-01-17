@@ -290,6 +290,19 @@ type V3DecryptTransferBatchResult struct {
 	CloseReason   string `json:"close_reason,omitempty"`
 }
 
+// 商家转账批次回调通知 解密结果
+type V3DecryptFundAppTransferResult struct {
+	Mchid          string `json:"mchid"`
+	OutBillNo      string `json:"out_bill_no"`
+	TransferBillNo string `json:"transfer_bill_no"`
+	State          string `json:"state"`
+	TransferAmount int    `json:"transfer_amount"`
+	Openid         string `json:"openid"`
+	FailReason     string `json:"fail_reason,omitempty"`
+	CreateTime     string `json:"create_time"`
+	UpdateTime     string `json:"update_time"`
+}
+
 // =====================================================================================================================
 
 type V3NotifyReq struct {
@@ -554,6 +567,18 @@ func (v *V3NotifyReq) DecryptViolationCipherText(apiV3Key string) (result *V3Dec
 func (v *V3NotifyReq) DecryptTransferBatchCipherText(apiV3Key string) (result *V3DecryptTransferBatchResult, err error) {
 	if v.Resource != nil {
 		result, err = V3DecryptTransferBatchNotifyCipherText(v.Resource.Ciphertext, v.Resource.Nonce, v.Resource.AssociatedData, apiV3Key)
+		if err != nil {
+			return nil, fmt.Errorf("V3NotifyReq(%s) decrypt cipher text error(%w)", js.MarshalString(v), err)
+		}
+		return result, nil
+	}
+	return nil, errors.New("notify data Resource is nil")
+}
+
+// 解密 商家转账批次回调通知 回调中的加密信息
+func (v *V3NotifyReq) DecryptFundAppTransferCipherText(apiV3Key string) (result *V3DecryptFundAppTransferResult, err error) {
+	if v.Resource != nil {
+		result, err = V3DecryptFundAppTransferBatchNotifyCipherText(v.Resource.Ciphertext, v.Resource.Nonce, v.Resource.AssociatedData, apiV3Key)
 		if err != nil {
 			return nil, fmt.Errorf("V3NotifyReq(%s) decrypt cipher text error(%w)", js.MarshalString(v), err)
 		}

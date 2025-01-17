@@ -141,6 +141,8 @@ type FundAppTransfer struct {
 	TransferBillNo string `json:"transfer_bill_no"` // 转账金额单位为分
 	CreateTime     string `json:"create_time"`      // 转账发起的时间
 	State          string `json:"state"`            // 转账状态
+	FailReason     string `json:"fail_reason"`      // 如果转账失败则有失败原因
+	PackageInfo    string `json:"package_info"`     // 微信支付分配的商户号
 }
 
 type FundAppTransferCancel struct {
